@@ -1,0 +1,31 @@
+application:
+  name: octobox
+  pods:
+  - name: app
+    image: octoboxio/octobox:latest
+    path: /
+    servicePorts:
+    - 3000
+    vars:
+      RAILS_ENV: production
+      SECRET_KEY_BASE: "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2"
+      DATABASE_URL: "postgresql://octobox:octobox@postgres.pod:5432/octobox"
+      REDIS_URL: "redis://redis.pod:6379"
+      GITHUB_CLIENT_ID: "placeholder"
+      GITHUB_CLIENT_SECRET: "placeholder"
+  - name: postgres
+    image: postgres:16-alpine
+    servicePorts:
+    - 5432
+    vars:
+      POSTGRES_DB: octobox
+      POSTGRES_USER: octobox
+      POSTGRES_PASSWORD: octobox
+    volumes:
+    - name: octobox-db
+      mountPath: /var/lib/postgresql/data
+      size: 5Gi
+  - name: redis
+    image: redis:7-alpine
+    servicePorts:
+    - 6379
