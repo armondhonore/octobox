@@ -1,18 +1,20 @@
 # Nexlayer fix — octobox (AUTHORITATIVE / PINNED)
 
-Root cause (from container logs): the pipeline-stored config injected the broken
+Root cause (from container logs): a stored recipe injected the broken
 `${octobox-postgres:5432}` template into `OCTOBOX_DATABASE_HOST`. The platform
 never resolves `${podName:port}` — it must be `<podName>.pod:<port>`. So
 `bin/docker-start`'s `nc -z $OCTOBOX_DATABASE_HOST` looped forever
-("Name does not resolve") and the DB migration / rails server never started.
+("Name does not resolve") and the rails server / `rake db:migrate` never ran.
 
-Fix: use the prebuilt official image and reference the postgres pod as
-`octobox-postgres.pod` (plain, no `${}`). bin/docker-start already waits for the
-DB and runs `rake db:migrate` before `rails s`.
+Fix: use the prebuilt official image directly (no source rebuild — the repo
+Gemfile pins ruby 4.0.5 which does not exist) and set the DB host to the plain
+pod-DNS form `octobox-postgres.pod`. bin/docker-start already waits for the DB
+and runs `rake db:migrate` before `rails s`. Use literal matching DB passwords
+on both pods (secret provisioning is unavailable without a GitHub token, so a
+`${POSTGRES_PASSWORD}` ref would never resolve).
 
 ## Fixed Dockerfile
 ```dockerfile
-# Thin re-tag of the official Octobox image (no rebuild of the app).
 FROM mirror.gcr.io/octoboxio/octobox:june-2026
 EXPOSE 3000
 ```
@@ -23,7 +25,7 @@ application:
   name: octobox
   pods:
   - name: app
-    image: "# filled by pipeline"
+    image: mirror.gcr.io/octoboxio/octobox:june-2026
     path: /
     servicePorts:
     - 3000
@@ -33,7 +35,7 @@ application:
       SECRET_KEY_BASE: "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2"
       OCTOBOX_DATABASE_NAME: octobox
       OCTOBOX_DATABASE_USERNAME: octobox
-      OCTOBOX_DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      OCTOBOX_DATABASE_PASSWORD: octoboxdbpass
       OCTOBOX_DATABASE_HOST: octobox-postgres.pod
       OCTOBOX_DATABASE_PORT: "5432"
       REDIS_URL: "redis://octobox-redis.pod:6379"
@@ -46,7 +48,7 @@ application:
     vars:
       POSTGRES_DB: octobox
       POSTGRES_USER: octobox
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: octoboxdbpass
     volumes:
     - name: octobox-db-v2
       mountPath: /var/lib/postgresql/data
