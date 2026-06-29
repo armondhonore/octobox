@@ -12,10 +12,8 @@ application:
       SECRET_KEY_BASE: octoboxplaceholdersecretkeybaseforpreviewdeploytestonly
       OCTOBOX_DATABASE_NAME: octobox
       OCTOBOX_DATABASE_USERNAME: octobox
-      OCTOBOX_DATABASE_PASSWORD: octobox
       OCTOBOX_DATABASE_HOST: octobox-postgres.pod
       GITHUB_CLIENT_ID: placeholder
-      GITHUB_CLIENT_SECRET: placeholder
   - name: octobox-postgres
     image: mirror.gcr.io/library/postgres:16-alpine
     servicePorts:
@@ -23,7 +21,7 @@ application:
     vars:
       POSTGRES_DB: octobox
       POSTGRES_USER: octobox
-      POSTGRES_PASSWORD: octobox
+      POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
     - name: octobox-db-v2
       mountPath: /var/lib/postgresql/data
