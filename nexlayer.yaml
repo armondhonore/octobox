@@ -14,7 +14,6 @@ application:
       OCTOBOX_DATABASE_USERNAME: octobox
       OCTOBOX_DATABASE_HOST: octobox-postgres.pod
       OCTOBOX_DATABASE_PORT: "5432"
-      REDIS_URL: "redis://octobox-redis.pod:6379"
       GITHUB_CLIENT_ID: "placeholder"
       GITHUB_CLIENT_SECRET: "placeholder"
   - name: octobox-postgres
@@ -29,7 +28,3 @@ application:
     - name: octobox-db-v2
       mountPath: /var/lib/postgresql/data
       size: 5Gi
-  - name: octobox-redis
-    image: mirror.gcr.io/library/redis:7-alpine
-    servicePorts:
-    - 6379
