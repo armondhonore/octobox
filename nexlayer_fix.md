@@ -35,7 +35,6 @@ application:
       SECRET_KEY_BASE: "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2"
       OCTOBOX_DATABASE_NAME: octobox
       OCTOBOX_DATABASE_USERNAME: octobox
-      OCTOBOX_DATABASE_PASSWORD: octoboxdbpass
       OCTOBOX_DATABASE_HOST: octobox-postgres.pod
       OCTOBOX_DATABASE_PORT: "5432"
       REDIS_URL: "redis://octobox-redis.pod:6379"
@@ -48,7 +47,7 @@ application:
     vars:
       POSTGRES_DB: octobox
       POSTGRES_USER: octobox
-      POSTGRES_PASSWORD: octoboxdbpass
+      POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
     - name: octobox-db-v2
       mountPath: /var/lib/postgresql/data
