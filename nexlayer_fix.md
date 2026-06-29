@@ -1,3 +1,24 @@
+# Nexlayer fix — octobox (AUTHORITATIVE / PINNED)
+
+Root cause (from container logs): the pipeline-stored config injected the broken
+`${octobox-postgres:5432}` template into `OCTOBOX_DATABASE_HOST`. The platform
+never resolves `${podName:port}` — it must be `<podName>.pod:<port>`. So
+`bin/docker-start`'s `nc -z $OCTOBOX_DATABASE_HOST` looped forever
+("Name does not resolve") and the DB migration / rails server never started.
+
+Fix: use the prebuilt official image and reference the postgres pod as
+`octobox-postgres.pod` (plain, no `${}`). bin/docker-start already waits for the
+DB and runs `rake db:migrate` before `rails s`.
+
+## Fixed Dockerfile
+```dockerfile
+# Thin re-tag of the official Octobox image (no rebuild of the app).
+FROM mirror.gcr.io/octoboxio/octobox:june-2026
+EXPOSE 3000
+```
+
+## Fixed nexlayer.yaml
+```yaml
 application:
   name: octobox
   pods:
@@ -34,3 +55,4 @@ application:
     image: mirror.gcr.io/library/redis:7-alpine
     servicePorts:
     - 6379
+```
