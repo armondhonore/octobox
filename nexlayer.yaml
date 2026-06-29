@@ -26,10 +26,9 @@ application:
       POSTGRES_DB: octobox
       POSTGRES_USER: octobox
       POSTGRES_PASSWORD: octobox
-      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
     - name: octobox-db
-      mountPath: /var/lib/postgresql
+      mountPath: /var/lib/postgresql/data
       size: 5Gi
   - name: octobox-redis
     image: mirror.gcr.io/library/redis:7-alpine
