@@ -32,7 +32,7 @@ application:
     vars:
       RAILS_ENV: production
       RAILS_SERVE_STATIC_FILES: "true"
-      SECRET_KEY_BASE: "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2"
+      SECRET_KEY_BASE: octoboxplaceholdersecretkeybaseforpreviewdeploytestonly
       OCTOBOX_DATABASE_NAME: octobox
       OCTOBOX_DATABASE_USERNAME: octobox
       OCTOBOX_DATABASE_HOST: octobox-postgres.pod
