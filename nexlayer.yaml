@@ -2,18 +2,23 @@ application:
   name: octobox
   pods:
   - name: app
-    image: mirror.gcr.io/octoboxio/octobox:latest
+    image: mirror.gcr.io/octoboxio/octobox:june-2026
     path: /
     servicePorts:
     - 3000
     vars:
       RAILS_ENV: production
+      RAILS_SERVE_STATIC_FILES: "true"
       SECRET_KEY_BASE: "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2"
-      DATABASE_URL: "postgresql://octobox:octobox@postgres.pod:5432/octobox"
-      REDIS_URL: "redis://redis.pod:6379"
+      OCTOBOX_DATABASE_NAME: octobox
+      OCTOBOX_DATABASE_USERNAME: octobox
+      OCTOBOX_DATABASE_PASSWORD: octobox
+      OCTOBOX_DATABASE_HOST: octobox-postgres.pod
+      OCTOBOX_DATABASE_PORT: "5432"
+      REDIS_URL: "redis://octobox-redis.pod:6379"
       GITHUB_CLIENT_ID: "placeholder"
       GITHUB_CLIENT_SECRET: "placeholder"
-  - name: postgres
+  - name: octobox-postgres
     image: mirror.gcr.io/library/postgres:16-alpine
     servicePorts:
     - 5432
@@ -21,11 +26,12 @@ application:
       POSTGRES_DB: octobox
       POSTGRES_USER: octobox
       POSTGRES_PASSWORD: octobox
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
     - name: octobox-db
-      mountPath: /var/lib/postgresql/data
+      mountPath: /var/lib/postgresql
       size: 5Gi
-  - name: redis
+  - name: octobox-redis
     image: mirror.gcr.io/library/redis:7-alpine
     servicePorts:
     - 6379
