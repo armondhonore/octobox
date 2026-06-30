@@ -33,8 +33,7 @@ application:
       RAILS_ENV: production
       RAILS_SERVE_STATIC_FILES: "true"
       SECRET_KEY_BASE: octoboxplaceholdersecretkeybaseforpreviewdeploytestonly
-      OCTOBOX_DATABASE_NAME: octobox
-      OCTOBOX_DATABASE_USERNAME: octobox
+      DATABASE_URL: postgresql://octobox:octobox@octobox-postgres.pod:5432/octobox
       OCTOBOX_DATABASE_HOST: octobox-postgres.pod
       GITHUB_CLIENT_ID: placeholder
   - name: octobox-postgres
@@ -44,7 +43,7 @@ application:
     vars:
       POSTGRES_DB: octobox
       POSTGRES_USER: octobox
-      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_PASSWORD: octobox
     volumes:
     - name: octobox-db-v2
       mountPath: /var/lib/postgresql/data
