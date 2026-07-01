@@ -2,7 +2,7 @@ application:
   name: octobox
   pods:
   - name: app
-    image: octoboxio/octobox:latest
+    image: mirror.gcr.io/octoboxio/octobox:latest
     path: /
     servicePorts:
     - 3000
@@ -14,7 +14,7 @@ application:
       GITHUB_CLIENT_ID: "placeholder"
       GITHUB_CLIENT_SECRET: "placeholder"
   - name: postgres
-    image: postgres:16-alpine
+    image: mirror.gcr.io/library/postgres:16-alpine
     servicePorts:
     - 5432
     vars:
@@ -26,6 +26,6 @@ application:
       mountPath: /var/lib/postgresql/data
       size: 5Gi
   - name: redis
-    image: redis:7-alpine
+    image: mirror.gcr.io/library/redis:7-alpine
     servicePorts:
     - 6379
